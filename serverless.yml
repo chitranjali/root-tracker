@@ -1,5 +1,4 @@
 service: RootAccess-tracker
-
 provider:
   name: aws
   runtime: python3.6
