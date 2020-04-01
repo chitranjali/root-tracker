@@ -1,0 +1,37 @@
+{
+    "version": "0",
+    "id": "7bm3424-9873-37219",
+    "detail-type": "AWS Console Sign In via CloudTrail",
+    "source": "aws.signin",
+    "account": "12345678907",
+    "time": "2020-03-20T17:15:28Z",
+    "region": "us-east-1",
+    "resources": [],
+    "detail": {
+        "eventVersion": "1.05",
+        "userIdentity": {
+            "type": "Root",
+            "principalId": "12345678907",
+            "arn": "arn:aws:iam::12345678907:root",
+            "accountId": "12345678907",
+            "accessKeyId": ""
+        },
+        "eventTime": "2020-03-20T17:15:28Z",
+        "eventSource": "signin.amazonaws.com",
+        "eventName": "ConsoleLogin",
+        "awsRegion": "global",
+        "sourceIPAddress": "",
+        "userAgent": "",
+        "requestParameters": null,
+        "responseElements": {
+            "ConsoleLogin": "Success"
+        },
+        "additionalEventData": {
+            "LoginTo": "",
+            "MobileVersion": "No",
+            "MFAUsed": "Yes"
+        },
+        "eventID": "b24s3748jc",
+        "eventType": "AwsConsoleSignIn"
+    }
+}

@@ -1,0 +1,91 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Template to create cloudwatch rules to track root access and MFA disablement",
+  "Parameters": {
+    "centralaccountnumber": {
+      "Description": "Account number of central account",
+      "Type": "String",
+      "Default": "12345678907"
+    }
+  },
+  "Resources": {
+    "OpsEventRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "EventRule",
+        "EventPattern": {
+          "detail-type": [
+            "AWS Console Sign In via CloudTrail"
+          ],
+          "detail": {
+            "userIdentity": {
+              "type": [
+                "Root"
+              ]
+            }
+          }
+        },
+        "Name": "root_tracker_rule",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                ":",
+                [
+                  "arn:aws:events",
+                  "us-east-1",
+                  {
+                    "Ref": "centralaccountnumber"
+                  },
+                  "event-bus/default"
+                ]
+              ]
+            },
+            "Id": "targetbus"
+          }
+        ]
+      }
+    },
+    "MFADisableRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "EventRule",
+        "EventPattern": {
+          "detail-type": [
+            "AWS API Call via CloudTrail"
+          ],
+          "detail": {
+            "eventSource": [
+              "iam.amazonaws.com"
+            ],
+            "eventName": [
+              "DeleteVirtualMFADevice",
+              "DeleteVirtualMFADevice"
+            ]
+          }
+        },
+        "Name": "MFA_disable_rule_tracker",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                ":",
+                [
+                  "arn:aws:events",
+                  "us-east-1",
+                  {
+                    "Ref": "centralaccountnumber"
+                  },
+                  "event-bus/default"
+                ]
+              ]
+            },
+            "Id": "targetbus"
+          }
+        ]
+      }
+    }
+  }
+}

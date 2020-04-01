@@ -1,0 +1,63 @@
+service: RootAccess-tracker
+
+provider:
+  name: aws
+  runtime: python3.6
+  timeout: 300
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  logRetentionInDays: 180
+  environment:
+    Stage: ${self:provider.stage}
+  deploymentBucket:
+    name: ${ssm:/environment/account-name}.${self:provider.region}.serverless
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "sns:Publish"
+        - "sts:AssumeRole"
+      Resource: "*"
+
+functions:
+  root-access-tracker:
+    handler: rootaccesstracker.lambda_handler
+    name: root-access-tracker-${self:provider.stage}
+    description: Lambda function to track root access and MFA disabling
+    memorySize: 128
+    timeout: 900
+    events:
+      - cloudwatchEvent:
+          event:
+            detail-type:
+              - "AWS Console Sign In via CloudTrail"
+            detail:
+              userIdentity:
+                type:
+                - Root
+      - cloudwatchEvent:
+          event:
+            detail-type:
+              - "AWS API Call via CloudTrail"
+            detail:
+              eventSource:
+                - "iam.amazonaws.com"
+              eventName:
+                - "DeleteVirtualMFADevice"
+                - "DeactivateMFADevice  "
+plugins:
+  - serverless-python-requirements
+  - serverless-prune-plugin
+
+custom:
+  prune:
+    automatic: true
+    number: 3
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**

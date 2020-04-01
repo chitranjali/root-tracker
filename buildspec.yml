@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  install:
+    run-as: root
+    commands:
+        - npm install > /dev/null
+  build:
+    run-as: root
+    commands:
+        - |
+            if expr $branch : "dev" > /dev/null; then
+                virtualenv -p python3.6 venv
+                . ./venv/bin/activate
+                pip3 install --upgrade -r requirements.txt
+                npm init -y
+                npm install --save serverless-python-requirements
+                npm install --save serverless-prune-plugin
+                python --version
+                npm install -g serverless
+                serverless -v
+            fi
+  post_build:
+    run-as: root
+    commands:
+        - |
+            . ./venv/bin/activate; sls deploy --stage $branch --region us-east-1;
