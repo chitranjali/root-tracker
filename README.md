@@ -56,12 +56,12 @@ aws configure
 **Install 'serverless-python-requirements' plugin .**
 
     serverless plugin install -n serverless-python-requirements --aws-profile <profile-name>
-    Example: serverless plugin install -n serverless-python-requirements --aws-profile Cerner-Duo
+    Example: serverless plugin install -n serverless-python-requirements --aws-profile chitra_per
 
 **Deploy the serverless project to cloud with profile name**
 
     serverless deploy --aws-profile <profile-name> --stage <dev/prod> --region <region-name>
-    Example: serverless deploy --aws-profile Cerner-Duo --stage dev --region us-east-1
+    Example: serverless deploy --aws-profile chitra_per --stage dev --region us-east-1
 
 Deployment output
 
